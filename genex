@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# ==== Colors ====
+
+LIME="\033[38;5;10m"
+YELLOW="\033[38;5;11m"
+PURPLE="\033[38;5;141m"
+LGRAY="\033[38;5;7m"
+LCYAN="\033[38;5;172m"
+RED="\033[38;5;9m"
+RESET="\033[0m"
+
+# ====   //   ====
+
+usage()
+{
+	echo -ne "Usage: ./genex [FLAGS] [LISTNAME] [AMOUNT OF EXERCISES]\n\n"
+	#echo -ne "${LIME}Available flags:${RESET}\n --${YELLOW}In terminal${RESET}-- \n${PURPLE}-f${RESET}: create two files named [CLASSNAME].cpp and [CLASSNAME].hpp with appropriated boilerplate code\n --${YELLOW}Inside of Vim${RESET}-- \n${PURPLE}-h${RESET}: Creates .hpp boilerplate.\n${PURPLE}-c${RESET}: Creates .cpp boilerplate.\n"
+	#echo -ne "\n${LGRAY}From Vim call it using${RESET} ${LCYAN}:.!bp_ocf [FLAG] [CLASSNAME]${RESET}\n"
+}
+
+create_list()
+{
+	echo "RESET = \"\\033[0m\""
+	echo "RED = \"\\033[38;5;9m\""
+	echo "PINK = \"\\033[38;5;13m\""
+	echo "ORANGE = \"\\033[38;5;214m\""
+	echo "TEAL = \"\\033[38;5;14m\""
+	echo -ne "\n"
+
+	arr=""
+
+	for ((i=0; i<$1; i++))
+	do
+		if [[ $i -lt 10 ]]; then
+			no="ex0"
+		else
+			no="ex"
+		fi
+		# Check if array 'arr' is unset or empty
+		if ! [ -z "${arr}" ]; then
+			arr+=", ${no}${i}"
+		else
+			arr+="${no}${i}"
+		fi
+		echo -e "def ${no}$i():"
+		echo -e "\tprint(f'{PINK}Description of exercise $((${i}+1)){RESET}')\n"
+	done
+
+	echo -e "max_amount = $1"
+	echo -e "exs = [${arr}]"
+	echo -e "print(f'{ORANGE}Pass 0 as argument to exit{RESET}')"
+	echo -e "while True:"
+	echo -e "\ttry:"
+	echo -e "\t\tex = int(input(f\"\\\n{TEAL}Qual exercício? (1 - {max_amount})\\\n{RESET}\"))"
+	echo -e "\t\tif (ex == 0):
+			print(f\"{ORANGE}>>> Exiting <<<{RESET}\")
+			break
+		elif 0 < ex <= max_amount:
+			exs[ex - 1]()
+		else:
+			print(f\"{RED}Input must be within 1 and {max_amount}{RESET}\")
+	except ValueError:
+		print(f\"{RED}Invalid input. Please use just valid numbers{RESET}\")"
+}
+
+file()
+{
+	if [ -f "$1.py" ]; then
+			echo -ne "Are you sure you want to replace $1? (y/n) \n"
+		read -r re
+		if [ $re != "y" ]; then
+			echo -ne "${RED}Aborting operation.${RESET}"
+		fi
+	fi
+	touch $1.py
+	#create_list $2
+	create_list $2 > $1.py
+}
+
+# Args checking
+if [ "$1" == "--help" ] || [ $# != 2 ] || ! [[ "$2" =~ ^[0-9]+$ ]]; then
+	exec >&2; usage; exit 1
+fi
+
+file $1 $2
