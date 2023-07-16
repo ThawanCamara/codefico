@@ -44,7 +44,7 @@ create_list()
 			arr+="${no}${i}"
 		fi
 		echo -e "def ${no}$i():"
-		echo -e "\tprint(f'{PINK}Description of exercise $((${i}+1)){RESET}')\n"
+		echo -e "\tprint(f'{PINK}{RESET}')\n"
 	done
 
 	echo -e "max_amount = $1"
